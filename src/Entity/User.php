@@ -3,14 +3,17 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Action\NotFoundAction;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Lcobucci\JWT\Signer\None;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints\IsNull;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
@@ -30,28 +33,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['read:User'])]
+    #[Groups(['read:user'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['read:User'])]
+    #[Groups(['read:user'])]
     private $email;
 
-    #[ORM\Column(type: 'json')]
-    #[Groups(['read:User'])]
+
     private $roles = [];
 
-    /**
-     * @Groups("user:write")
-     *
-     */
-    #[
-        Groups(['write:user:item'], ['read:user:item']),
-        SerializedName('password')
-    ]
+    #[ORM\Column]
+    #[ApiProperty(
+        attributes: [
+            "openapi_context" => [
+                "type" => "string",
+                "example" => "password",
+            ],
+        ],
+    )]
     private $plainPassword;
 
-    #[ORM\Column(type: 'string')]
+
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

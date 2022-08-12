@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
         'get' => ['method' => 'get'],
     ],
 )]
+
 class Category
 {
     #[ORM\Id]
@@ -55,12 +56,6 @@ class Category
     {
         $this->image = $image;
 
-        return $this;
-    }
-
-    public function getAllCategory(string $category)
-    {
-        $this->getAllCategory($category);
         return $this;
     }
 }
