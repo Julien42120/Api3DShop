@@ -9,8 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoriesController extends AbstractController
 {
-    #[Route('/categories', name: 'app_categories')]
-    public function getCategory(CategoryRepository $categoryRepository): Response
+    #[Route('/categories', name: 'app_categories', methods: "GET")]
+    public function __invoke(CategoryRepository $categoryRepository): Response
     {
         $allCategories = $categoryRepository->findAll();
 

@@ -4,49 +4,140 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PrintingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrintingRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        'get' => ['method' => 'get'],
+        'post' => [
+            'controller' => CategoryImageController::class,
+            'deserialize' => false,
+            "openapi_context" => [
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "multipart/form-data" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "category_id" => [
+                                        "description" => "The category of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "user_id" => [
+                                        "description" => "The user of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "material_id" => [
+                                        "description" => "The material of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "title" => [
+                                        "description" => "The title of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "description" => [
+                                        "description" => "The description of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "price" => [
+                                        "description" => "The price of the print",
+                                        "type" => "string",
+                                        "example" => "30",
+                                    ],
+                                    "default_size" => [
+                                        "description" => "The size of the print",
+                                        "type" => "int",
+                                        "example" => "Toy",
+                                    ],
+                                    "default_weight" => [
+                                        "description" => "The weight of the print",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "images" => [
+                                        "type" => "string",
+                                        "format" => "binary",
+                                        "description" => "images of the print",
+                                    ],
+
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    itemOperations: [
+        'get' => ['method' => 'get'],
+    ],
+    normalizationContext: ["groups" => "user:read"],
+    denormalizationContext: ["groups" => "user:write"],
+)]
+
 class Printing
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read'])]
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user:read'])]
     private $category;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user:read'])]
     private $user;
 
-    #[ORM\ManyToOne(targetEntity: Material::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $material;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     private $title;
 
-    #[ORM\Column(type: 'json')]
-    private $images = [];
-
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     private $description;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read', 'user:write'])]
     private $price;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read', 'user:write'])]
     private $default_size;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read', 'user:write'])]
     private $default_weight;
 
-    #[ORM\Column(type: 'json')]
-    private $option_size = [];
+
+    #[ORM\ManyToMany(targetEntity: Material::class, inversedBy: 'printings')]
+    private $material;
+
+    #[ORM\OneToMany(mappedBy: 'printing', targetEntity: ImagePrinting::class)]
+    private $imagePrintings;
+
+
+
+    public function __construct()
+    {
+        $this->material = new ArrayCollection();
+        $this->imagePrintings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -77,18 +168,6 @@ class Printing
         return $this;
     }
 
-    public function getMaterial(): ?Material
-    {
-        return $this->material;
-    }
-
-    public function setMaterial(?Material $material): self
-    {
-        $this->material = $material;
-
-        return $this;
-    }
-
     public function getTitle(): ?string
     {
         return $this->title;
@@ -97,18 +176,6 @@ class Printing
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getImages(): ?array
-    {
-        return $this->images;
-    }
-
-    public function setImages(array $images): self
-    {
-        $this->images = $images;
 
         return $this;
     }
@@ -161,15 +228,125 @@ class Printing
         return $this;
     }
 
-    public function getOptionSize(): ?array
+
+
+    /**
+     * @return Collection<int, Material>
+     */
+    public function getMaterial(): Collection
     {
-        return $this->option_size;
+        return $this->material;
     }
 
-    public function setOptionSize(array $option_size): self
+    public function addMaterial(Material $material): self
     {
-        $this->option_size = $option_size;
+        if (!$this->material->contains($material)) {
+            $this->material[] = $material;
+        }
+
+        return $this;
+    }
+
+    public function removeMaterial(Material $material): self
+    {
+        $this->material->removeElement($material);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ImagePrinting>
+     */
+    public function getImagePrintings(): Collection
+    {
+        return $this->imagePrintings;
+    }
+
+    public function addImagePrinting(ImagePrinting $imagePrinting): self
+    {
+        if (!$this->imagePrintings->contains($imagePrinting)) {
+            $this->imagePrintings[] = $imagePrinting;
+            $imagePrinting->setPrinting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImagePrinting(ImagePrinting $imagePrinting): self
+    {
+        if ($this->imagePrintings->removeElement($imagePrinting)) {
+            // set the owning side to null (unless already changed)
+            if ($imagePrinting->getPrinting() === $this) {
+                $imagePrinting->setPrinting(null);
+            }
+        }
 
         return $this;
     }
 }
+
+
+// "openapi_context" => [
+//                 "requestBody" => [
+//                     "required" => true,
+//                     "content" => [
+//                         "multipart/form-data" => [
+//                             "schema" => [
+//                                 "type" => "object",
+//                                 "properties" => [
+//                                     "category_id" => [
+//                                         "description" => "The category of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "user_id" => [
+//                                         "description" => "The user of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "material_id" => [
+//                                         "description" => "The material of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "title" => [
+//                                         "description" => "The title of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "description" => [
+//                                         "description" => "The description of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "price" => [
+//                                         "description" => "The price of the print",
+//                                         "type" => "string",
+//                                         "example" => "30",
+//                                     ],
+//                                     "default_size" => [
+//                                         "description" => "The size of the print",
+//                                         "type" => "int",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "default_weight" => [
+//                                         "description" => "The weight of the print",
+//                                         "type" => "string",
+//                                         "example" => "Toy",
+//                                     ],
+//                                     "images" => [
+//                                         "type" => "string",
+//                                         "format" => "binary",
+//                                         "description" => "images of the print",
+//                                     ],
+//                                     "options_size" => [
+//                                         "type" => "string",
+//                                         "format" => "string",
+//                                         "description" => "option of the print size",
+//                                     ],
+//                                 ],
+//                             ],
+//                         ],
+//                     ],
+//                 ],
+//             ],

@@ -11,26 +11,26 @@ class PasswordHasher implements PasswordHasherInterface
     public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
     }
-    public function hash(string $plainPassword): string
+    public function hash(string $password): string
     {
         $user = new User();
-        $user->setPassword($plainPassword);
+        $user->setPassword($password);
         // hash the password (based on the password hasher factory config for the $user class)
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
-            $plainPassword
+            $password
         );
         $user->setPassword($hashedPassword);
 
         // In another action (e.g. to confirm deletion), you can verify the password
-        if (!$this->passwordHasher->isPasswordValid($user, $plainPassword)) {
+        if (!$this->passwordHasher->isPasswordValid($user, $password)) {
             throw new \Exception('Bad credentials, cannot delete this user.');
         }
         return $hashedPassword;
     }
-    public function verify(string $hashedPassword, string $plainPassword): bool
+    public function verify(string $hashedPassword, string $password): bool
     {
-        if ($hashedPassword !== $plainPassword) {
+        if ($hashedPassword !== $password) {
             return true;
         }
         return false;

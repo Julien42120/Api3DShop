@@ -6,7 +6,6 @@ namespace App\DataPersister;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Security\PasswordHasher;
 
 /**

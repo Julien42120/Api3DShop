@@ -3,18 +3,49 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\CategoryImageController;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+
+
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
     collectionOperations: [
         'get' => ['method' => 'get'],
-        'post' => ['method' => 'post'],
+        'post' => [
+            'controller' => CategoryImageController::class,
+            'deserialize' => false,
+            "openapi_context" => [
+                "requestBody" => [
+                    "required" => true,
+                    "content" => [
+                        "multipart/form-data" => [
+                            "schema" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "category" => [
+                                        "description" => "The name of the category",
+                                        "type" => "string",
+                                        "example" => "Toy",
+                                    ],
+                                    "image" => [
+                                        "type" => "string",
+                                        "format" => "binary",
+                                        "description" => "Upload a cover image of the category",
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
     itemOperations: [
         'get' => ['method' => 'get'],
     ],
+
 )]
 
 class Category

@@ -2,21 +2,24 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
+
 use App\Repository\PrintingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
 class PrintingController extends AbstractController
 {
-    #[Route('/printing', name: 'app_printing')]
-    public function getPrinting(PrintingRepository $printingRepository, Category $category): Response
+    /////////////////// OK
+    #[Route('/printing', name: 'all_printing', methods: "GET")]
+    public function __invoke(PrintingRepository $printingRepository): Response
     {
-        $allPrintings = $printingRepository->findBy(['category' => $category->getId()], [],);
+        $allPrints = $printingRepository->findAll();
         $response = [
             'success' => false,
-            'categories' => $allPrintings,
+            'printings' => $allPrints,
         ];
         return $this->json($response);
     }

@@ -2,68 +2,118 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Action\NotFoundAction;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\MeController;
+use App\Controller\UserController;
+use App\Controller\UserAvatarController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Lcobucci\JWT\Signer\None;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use Symfony\Component\Validator\Constraints\IsNull;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     collectionOperations: [
         'get' => ['method' => 'get'],
         'post' => ['method' => 'post'],
+        // 'controller' => UserAvatarController::class,
+        // 'deserialize' => false,
+        // "openapi_context" => [
+        //     "requestBody" => [
+        //         "required" => true,
+        //         "content" => [
+        //             "multipart/form-data" => [
+        //                 "schema" => [
+        //                     "type" => "object",
+        //                     "properties" => [
+        //                         "email" => [
+        //                             "description" => "The email of the user",
+        //                             "type" => "string",
+        //                             "example" => "ClarkKent@gmail.com",
+        //                         ],
+        //                         "pseudo" => [
+        //                             "description" => "The name of the user",
+        //                             "type" => "string",
+        //                             "example" => "Clark Kent",
+        //                         ],
+        //                         "password" => [
+        //                             "description" => "The password of the user",
+        //                             "type" => "string",
+        //                             "example" => "supermanpassword25",
+        //                         ],
+        //                         "phone" => [
+        //                             "description" => "The phone of the user",
+        //                             "type" => "string",
+        //                             "example" => "0707070707",
+        //                         ],
+        //                         "avatar" => [
+        //                             "type" => "string",
+        //                             "format" => "binary",
+        //                             "description" => "Upload a cover image of the user",
+        //                         ],
+        //                     ],
+        //                 ],
+        //             ],
+        //         ],
+        //     ],
+        // ],
+        // ],
+        'me' => ['method' => 'get', 'controlleur' => UserController::class, 'path' => '/me'],
+
     ],
     itemOperations: [
         'get' => ['method' => 'get', 'requirements' => ['id' => '\d+'],],
         'put' => ['method' => 'put'],
-        'delete' => ['method' => 'delete']
+        'delete' => ['method' => 'delete'],
     ],
+    normalizationContext: ["groups" => "user:read"],
+    denormalizationContext: ["groups" => "user:write"],
 )]
 
+#[UniqueEntity('pseudo')]
+#[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['read:user'])]
+    #[Groups(['user:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['read:user'])]
+    #[Groups(['user:read', 'user:write'])]
     private $email;
 
-
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['user:read'])]
     private $roles = [];
 
-    #[ORM\Column]
-    #[ApiProperty(
-        attributes: [
-            "openapi_context" => [
-                "type" => "string",
-                "example" => "password",
-            ],
-        ],
-    )]
+    /**
+     * @Groups("user:write")
+     *
+     */
+    #[
+        SerializedName('password')
+    ]
+    #[Groups(['user:write'])]
     private $plainPassword;
 
-
+    #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
     private $avatar;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read', 'user:write'])]
     private $pseudo;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
     private $phone;
 
     public function getId(): ?int
