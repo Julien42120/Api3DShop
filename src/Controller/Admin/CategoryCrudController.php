@@ -19,9 +19,11 @@ class CategoryCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextField::new('category'),
-            ImageField::new('image'),
+            ImageField::new('image')
+                ->setBasePath('uploads/images_categories/')
+                ->setUploadDir('public/uploads/images_categories/')
+                ->setUploadedFileNamePattern('http://127.0.0.1:8000/uploads/images_categories/[slug]-[timestamp].[extension]'),
         ];
     }
 }

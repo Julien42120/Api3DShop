@@ -20,7 +20,6 @@ class PrintingCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             AssociationField::new('category'),
             AssociationField::new('user'),
             TextField::new('title'),
@@ -28,6 +27,7 @@ class PrintingCrudController extends AbstractCrudController
             NumberField::new('price'),
             NumberField::new('default_size'),
             NumberField::new('default_weight'),
+            AssociationField::new('default_material'),
         ];
     }
 }

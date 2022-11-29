@@ -4,7 +4,6 @@ namespace App\Controller;
 
 
 use App\Entity\Category;
-use App\Entity\Printing;
 use App\Repository\PrintingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

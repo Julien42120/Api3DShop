@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\CategoryImageController;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,34 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     collectionOperations: [
         'get' => ['method' => 'get'],
-        'post' => [
-            'controller' => CategoryImageController::class,
-            'deserialize' => false,
-            "openapi_context" => [
-                "requestBody" => [
-                    "required" => true,
-                    "content" => [
-                        "multipart/form-data" => [
-                            "schema" => [
-                                "type" => "object",
-                                "properties" => [
-                                    "category" => [
-                                        "description" => "The name of the category",
-                                        "type" => "string",
-                                        "example" => "Toy",
-                                    ],
-                                    "image" => [
-                                        "type" => "string",
-                                        "format" => "binary",
-                                        "description" => "Upload a cover image of the category",
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
+        'post' => ['method' => 'post'],
+
     ],
     itemOperations: [
         'get' => ['method' => 'get'],
@@ -88,5 +61,10 @@ class Category
         $this->image = $image;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->category; // Remplacer champ par une propriété "string" de l'entité
     }
 }

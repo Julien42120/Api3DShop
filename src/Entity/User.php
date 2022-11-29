@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\UserController;
-use App\Controller\UserAvatarController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -18,48 +17,6 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     collectionOperations: [
         'get' => ['method' => 'get'],
         'post' => ['method' => 'post'],
-        // 'controller' => UserAvatarController::class,
-        // 'deserialize' => false,
-        // "openapi_context" => [
-        //     "requestBody" => [
-        //         "required" => true,
-        //         "content" => [
-        //             "multipart/form-data" => [
-        //                 "schema" => [
-        //                     "type" => "object",
-        //                     "properties" => [
-        //                         "email" => [
-        //                             "description" => "The email of the user",
-        //                             "type" => "string",
-        //                             "example" => "ClarkKent@gmail.com",
-        //                         ],
-        //                         "pseudo" => [
-        //                             "description" => "The name of the user",
-        //                             "type" => "string",
-        //                             "example" => "Clark Kent",
-        //                         ],
-        //                         "password" => [
-        //                             "description" => "The password of the user",
-        //                             "type" => "string",
-        //                             "example" => "supermanpassword25",
-        //                         ],
-        //                         "phone" => [
-        //                             "description" => "The phone of the user",
-        //                             "type" => "string",
-        //                             "example" => "0707070707",
-        //                         ],
-        //                         "avatar" => [
-        //                             "type" => "string",
-        //                             "format" => "binary",
-        //                             "description" => "Upload a cover image of the user",
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //     ],
-        // ],
-        // ],
         'me' => ['method' => 'get', 'controlleur' => UserController::class, 'path' => '/me'],
 
     ],
@@ -242,5 +199,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->phone = $phone;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->pseudo; // Remplacer champ par une propriété "string" de l'entité
     }
 }

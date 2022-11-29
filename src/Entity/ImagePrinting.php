@@ -3,11 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\AllPrintingsController;
-use App\Controller\ImagePrintingController;
-use App\Controller\PrintingController;
 use App\Repository\ImagePrintingRepository;
-use App\Repository\PrintingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -15,36 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [
         'get' => ['method' => 'get'],
-        'post' => [
-            'controller' => ImagePrintingController::class,
-            'deserialize' => false,
-            "openapi_context" => [
-                "requestBody" => [
-                    "required" => true,
-                    "content" => [
-                        "multipart/form-data" => [
-                            "schema" => [
-                                "type" => "object",
-                                "properties" => [
-                                    "printing" => [
-                                        'type' => 'string',
-                                        // 'enum' => [(AllPrintingsController::class)],
-                                        'example' => 'server1',
-                                        'description' => 'Server to select',
-                                        'required' => true
-                                    ],
-                                    "image" => [
-                                        "type" => "string",
-                                        "format" => "binary",
-                                        "description" => "Upload a cover image of the print",
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
+        'post' => ['method' => 'post']
+
     ],
     itemOperations: [
         'get' => ['method' => 'get', 'requirements' => ['id' => '\d+'],]

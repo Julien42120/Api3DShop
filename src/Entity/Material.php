@@ -11,8 +11,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MaterialRepository::class)]
 #[ApiResource(
-    normalizationContext: ["groups" => "user:read"],
-    denormalizationContext: ["groups" => "user:write"],
+    collectionOperations: [
+        'get' => ['method' => 'get'],
+        'post' => ['method' => 'post'],
+    ],
+    itemOperations: [
+        'get' => ['method' => 'get'],
+    ],
+
 )]
 
 class Material
@@ -20,38 +26,32 @@ class Material
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['user:read', 'user:write'])]
     private $type_name;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['user:read', 'user:write'])]
     private $lenght;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['user:read', 'user:write'])]
     private $density;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read', 'user:write'])]
     private $price_per_kg;
 
     #[ORM\Column(type: 'string', length: 50)]
-    #[Groups(['user:read', 'user:write'])]
     private $color;
 
-    #[Groups(['user:read', 'user:write'])]
-    #[ORM\ManyToMany(targetEntity: Printing::class, mappedBy: 'material')]
-    private $printings;
-
+    #[ORM\OneToMany(mappedBy: 'default_material', targetEntity: Printing::class)]
+    private Collection $printings;
 
     public function __construct()
     {
         $this->printings = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -118,6 +118,11 @@ class Material
         return $this;
     }
 
+    public function __toString()
+    {
+        return $this->color; // Remplacer champ par une propriété "string" de l'entité
+    }
+
     /**
      * @return Collection<int, Printing>
      */
@@ -129,8 +134,8 @@ class Material
     public function addPrinting(Printing $printing): self
     {
         if (!$this->printings->contains($printing)) {
-            $this->printings[] = $printing;
-            $printing->addMaterial($this);
+            $this->printings->add($printing);
+            $printing->setDefaultMaterial($this);
         }
 
         return $this;
@@ -139,7 +144,10 @@ class Material
     public function removePrinting(Printing $printing): self
     {
         if ($this->printings->removeElement($printing)) {
-            $printing->removeMaterial($this);
+            // set the owning side to null (unless already changed)
+            if ($printing->getDefaultMaterial() === $this) {
+                $printing->setDefaultMaterial(null);
+            }
         }
 
         return $this;
