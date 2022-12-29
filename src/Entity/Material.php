@@ -18,7 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
     itemOperations: [
         'get' => ['method' => 'get'],
     ],
-
+    normalizationContext: ["groups" => "user:read"],
+    denormalizationContext: ["groups" => "user:write"],
 )]
 
 class Material
@@ -30,22 +31,31 @@ class Material
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read'])]
     private $type_name;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['user:read'])]
     private $lenght;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['user:read'])]
     private $density;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read'])]
     private $price_per_kg;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['user:read'])]
     private $color;
 
     #[ORM\OneToMany(mappedBy: 'default_material', targetEntity: Printing::class)]
     private Collection $printings;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read'])]
+    private $image;
 
     public function __construct()
     {
@@ -149,6 +159,18 @@ class Material
                 $printing->setDefaultMaterial(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

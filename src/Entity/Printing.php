@@ -68,6 +68,10 @@ class Printing
     #[Groups(['user:read'])]
     private ?Material $default_material = null;
 
+    #[ORM\Column]
+    #[Groups(['user:read'])]
+    private ?int $nbr_of_printing_hours = null;
+
     public function __construct()
     {
         $this->material = new ArrayCollection();
@@ -207,6 +211,18 @@ class Printing
     public function setDefaultMaterial(?Material $default_material): self
     {
         $this->default_material = $default_material;
+
+        return $this;
+    }
+
+    public function getNbrOfPrintingHours(): ?int
+    {
+        return $this->nbr_of_printing_hours;
+    }
+
+    public function setNbrOfPrintingHours(int $nbr_of_printing_hours): self
+    {
+        $this->nbr_of_printing_hours = $nbr_of_printing_hours;
 
         return $this;
     }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MaterialRepository;
 use App\Repository\PrintingRepository;
+use App\Service\GetPrice;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -20,27 +21,22 @@ class ConfigurationController extends AbstractController
         $printId = $parameters['printing'];
         $materialId = $parameters['material'];
 
-        // Je récupère mes entité en foction de l'id reçu
+        // Je récupère mes entité en fonction de l'id reçu
         $print = $printingRepository->findBy(['id' => $printId], [],);
         $material = $materialRepository->findBy(['id' => $materialId], [],);
 
-        // Prix du print
-        $printPrice = $print[0]->getPrice();
+        //////////////////////////////////////////////////// 
 
-        // Poid du print 
-        $printWeight = $print[0]->getDefaultWeight();
+        $priceWithNewMaterial = GetPrice::priceProductWithMaterial($print, $material);
+        $priceOfElectricity = GetPrice::priceProductWithElectricity($print);
 
-        // prix du materiel choisi
-        $priceMaterialPerKg = $material[0]->getPricePerKg();
+        // addition du prix du matriel + prix electicité
+        $calcul = $priceOfElectricity + $priceWithNewMaterial;
 
-        //Calcul du prix par 
-        $pricePerGramme = $priceMaterialPerKg / 1000;
-
-        // X 1.7 en moyenne  pour le cout de l'électricité 
-        $resultCalcul = round(($printWeight * $pricePerGramme) * 1.7);
+        $finalPrice = GetPrice::priceProductFinal($calcul);
 
         return $this->json([
-            'new_price' => $resultCalcul
+            'new_price' => $finalPrice
         ]);
     }
 }

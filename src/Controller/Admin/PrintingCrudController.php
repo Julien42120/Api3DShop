@@ -28,6 +28,7 @@ class PrintingCrudController extends AbstractCrudController
             NumberField::new('default_size'),
             NumberField::new('default_weight'),
             AssociationField::new('default_material'),
+            NumberField::new('nbr_of_printing_hours'),
         ];
     }
 }

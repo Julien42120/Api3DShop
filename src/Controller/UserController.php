@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\OrderRepository;
+
+use App\Repository\OrdersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -13,7 +14,7 @@ class UserController extends AbstractController
 {
     // use UploadImageTrait;
     #[Route('/profile', name: 'app_profile')]
-    public function __invoke(OrderRepository $orderRepository)
+    public function __invoke(OrdersRepository $orderRepository)
     {
         $allOrder = $orderRepository->findBy(['user' => $this->getUser()], [],);
         $user = $this->getUser();
