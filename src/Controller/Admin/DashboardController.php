@@ -11,13 +11,20 @@ use App\Entity\Category;
 use App\Entity\ImagePrinting;
 use App\Entity\Material;
 use App\Entity\Printing;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Bundle\SecurityBundle\Security\UserAuthenticator;
 
 class DashboardController extends AbstractDashboardController
 {
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
+        if ($this->getUser() && count($this->getUser()->getRoles()) <= 1) {
+            # code...
+            return $this->redirectToRoute('app_login');
+        }
         return $this->render('admin/index.html.twig');
+        // return $this->render('security/login.html.twig');
 
         // Option 1. You can make your dashboard redirect to some common page of your backend
         //
@@ -26,9 +33,6 @@ class DashboardController extends AbstractDashboardController
 
         // Option 2. You can make your dashboard redirect to different pages depending on the user
         //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirect('...');
-        // }
 
         // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)

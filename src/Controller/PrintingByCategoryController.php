@@ -19,7 +19,7 @@ class PrintingByCategoryController extends AbstractController
         $allPrintingsByCategory = $printingRepository->findBy(['category' => $category->getId()], [],);
         $response = [
             'success' => false,
-            'category' => $allPrintingsByCategory,
+            'category' => $allPrintingsByCategory
         ];
         return $this->json($response);
     }

@@ -3,14 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\OrderRepository;
+use App\Repository\OrdersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: '`order`')]
+#[ORM\Entity(repositoryClass: OrdersRepository::class)]
 #[ApiResource(
     collectionOperations: [
         'get' => ['method' => 'get'],
@@ -22,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ["groups" => "user:read"],
     denormalizationContext: ["groups" => "user:write"],
 )]
-class Order
+class Orders
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,7 +30,7 @@ class Order
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'user:write'])]
     private $user;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -45,6 +44,10 @@ class Order
     #[ORM\ManyToMany(targetEntity: Printing::class)]
     #[Groups(['user:read', 'user:write'])]
     private $printing;
+
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['user:read', 'user:write'])]
+    private $final_price;
 
     public function __construct()
     {
@@ -112,6 +115,18 @@ class Order
     public function removePrinting(Printing $printing): self
     {
         $this->printing->removeElement($printing);
+
+        return $this;
+    }
+
+    public function getFinalPrice(): ?int
+    {
+        return $this->final_price;
+    }
+
+    public function setFinalPrice(int $final_price): self
+    {
+        $this->final_price = $final_price;
 
         return $this;
     }

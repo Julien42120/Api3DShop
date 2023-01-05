@@ -1,0 +1,4 @@
+[29-Dec-2022 15:33:39 UTC] [critical] Error thrown while running command "'d:m:m'". Message: "An exception occurred in the driver: SQLSTATE[HY000] [1045] Access denied for user 'u322790152_julien'@'127.0.0.1' (using password: YES)"
+[29-Dec-2022 15:34:51 UTC] [critical] Error thrown while running command "'d:m:m'". Message: "An exception occurred in the driver: SQLSTATE[HY000] [1045] Access denied for user 'u322790152_julien'@'127.0.0.1' (using password: YES)"
+[05-Jan-2023 09:16:11 UTC] 2023-01-05T09:16:11+00:00 [info] User Deprecated: Since api-platform/core 2.7: The service "ApiPlatform\Core\Api\IdentifiersExtractor" is deprecated, use ApiPlatform\Api\IdentifiersExtractor instead.
+[05-Jan-2023 09:16:11 UTC] 2023-01-05T09:16:11+00:00 [info] User Deprecated: Since api-platform/core 2.7: Use "ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface" instead of "ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface".

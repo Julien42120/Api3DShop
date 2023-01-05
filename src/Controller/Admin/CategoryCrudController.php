@@ -21,9 +21,9 @@ class CategoryCrudController extends AbstractCrudController
         return [
             TextField::new('category'),
             ImageField::new('image')
-                ->setBasePath('uploads/images_categories/')
+                ->setBasePath('public/uploads/images_categories/')
                 ->setUploadDir('public/uploads/images_categories/')
-                ->setUploadedFileNamePattern('http://127.0.0.1:8000/uploads/images_categories/[slug]-[timestamp].[extension]'),
+                ->setUploadedFileNamePattern('https://3dshopapi.fr/public/uploads/images_categories/[slug]-[timestamp].[extension]'),
         ];
     }
 }
