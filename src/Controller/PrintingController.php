@@ -17,7 +17,7 @@ class PrintingController extends AbstractController
         $allPrints = $printingRepository->findAll();
         $response = [
             'success' => false,
-            'printings' => $allPrints,
+            'printings' => $allPrints
         ];
         return $this->json($response);
     }

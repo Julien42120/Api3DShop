@@ -21,7 +21,7 @@ class ImagePrintingCrudController extends AbstractCrudController
             ImageField::new('image')
                 ->setBasePath('public\uploads\images_printings')
                 ->setUploadDir('public\uploads\images_printings')
-                ->setUploadedFileNamePattern('http://127.0.0.1:8000/uploads/images_printings/[slug]-[timestamp].[extension]'),
+                ->setUploadedFileNamePattern('https://3dshopapi.fr/public/uploads/images_printings/[slug]-[timestamp].[extension]'),
         ];
     }
 }

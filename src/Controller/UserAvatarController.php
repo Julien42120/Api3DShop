@@ -19,7 +19,7 @@ final class UserAvatarController extends AbstractController
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"avatar" is required');
         }
-
+ 
         // create a new entity and set its values
         $user = new User();
         $user->setPseudo($request->get('pseudo'));

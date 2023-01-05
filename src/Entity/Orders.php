@@ -30,7 +30,7 @@ class Orders
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'user:write'])]
     private $user;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -46,7 +46,11 @@ class Orders
     private $printing;
 
     #[ORM\Column(type: 'integer')]
+<<<<<<< HEAD:src/Entity/Orders.php
+    #[Groups(['user:read', 'user:write'])]
+=======
     #[Groups(['user:write', 'user:read'])]
+>>>>>>> bdd13e7b8126fa97572a95bc97e63690f3b847d4:src/Entity/Order.php
     private $final_price;
 
     public function __construct()

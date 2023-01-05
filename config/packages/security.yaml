@@ -18,16 +18,31 @@ security:
         dev:
             pattern: ^/(profiler|wdt)
             security: false
-        main:
-            stateless: true
+        api: 
             provider: app_user_provider
-            json_login:
+            json_login: 
                 check_path: /authentication_token
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            jwt: ~    
+            jwt: ~ 
+            logout:
+                path: app_logout
+            custom_authenticators:
+                    - App\Security\AppAuthenticator
+            entry_point: App\Security\AppAuthenticator
+
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                check_path: app_login
+                login_path: app_login
+                enable_csrf: true
+            custom_authenticators:
+                - App\Security\AppAuthenticator
+            entry_point: App\Security\AppAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -37,4 +52,5 @@ security:
         - { path: ^/api, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
         - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
         - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
        
