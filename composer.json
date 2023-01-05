@@ -25,7 +25,11 @@
         "symfony/dotenv": "6.0.*",
         "symfony/expression-language": "6.0.*",
         "symfony/filesystem": "6.0.*",
+<<<<<<< HEAD
         "symfony/flex": "2.*",
+=======
+        "symfony/flex": "^2",
+>>>>>>> bdd13e7b8126fa97572a95bc97e63690f3b847d4
         "symfony/framework-bundle": "6.0.*",
         "symfony/http-client": "6.0.*",
         "symfony/mailer": "6.0.*",

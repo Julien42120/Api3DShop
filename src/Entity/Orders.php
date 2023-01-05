@@ -42,11 +42,15 @@ class Orders
     private $delivery_address;
 
     #[ORM\ManyToMany(targetEntity: Printing::class)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:write', 'user:read'])]
     private $printing;
 
     #[ORM\Column(type: 'integer')]
+<<<<<<< HEAD:src/Entity/Orders.php
     #[Groups(['user:read', 'user:write'])]
+=======
+    #[Groups(['user:write', 'user:read'])]
+>>>>>>> bdd13e7b8126fa97572a95bc97e63690f3b847d4:src/Entity/Order.php
     private $final_price;
 
     public function __construct()

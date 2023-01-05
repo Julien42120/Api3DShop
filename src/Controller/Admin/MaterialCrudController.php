@@ -25,9 +25,15 @@ class MaterialCrudController extends AbstractCrudController
             NumberField::new('price_per_kg'),
             TextField::new('color'),
             ImageField::new('image')
+<<<<<<< HEAD
                 ->setBasePath('public/uploads/images_materials/')
                 ->setUploadDir('public/uploads/images_materials/')
                 ->setUploadedFileNamePattern('https://3dshopapi.fr/public/uploads/images_materials/[slug]-[timestamp].[extension]'),
+=======
+                ->setBasePath('uploads/images_materials/')
+                ->setUploadDir('public/uploads/images_materials/')
+                ->setUploadedFileNamePattern('http://127.0.0.1:8000/uploads/images_materials/[slug]-[timestamp].[extension]'),
+>>>>>>> bdd13e7b8126fa97572a95bc97e63690f3b847d4
         ];
     }
 }
